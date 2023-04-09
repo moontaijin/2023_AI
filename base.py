@@ -2,6 +2,7 @@ import numpy as np
 import random
 import pandas as pd
 import heapq
+import json
 
 from typing import List, Tuple
 from math import sqrt
@@ -30,10 +31,13 @@ def generate_cities(data_path,city_size):
 def euclidean_distance(city1: City, city2: City) -> float:
     return sqrt((city1.x - city2.x) ** 2 + (city1.y - city2.y) ** 2)
 
-CITY_SIZE = 1000
-CITY_LIST = generate_cities('C:/Users/moontaijin/Desktop/대학/인공지능/23Project#1/2023_AI_TSP.csv', CITY_SIZE)
-NUM_CLUSTER = 500
-POP_SIZE = 200
-ELITE_SIZE = 40
-MUTATION_RATE = 0.01
-GENERATIONS = 100
+with open('config.json','r',encoding='utf-8') as f:
+    load_data = json.load(f)
+
+CITY_SIZE = load_data['CITY_SIZE']
+CITY_LIST = generate_cities(load_data['CITY_LIST_PATH'], CITY_SIZE)
+NUM_CLUSTER = load_data['NUM_CLUSTER']
+POP_SIZE = load_data['POP_SIZE']
+ELITE_SIZE = load_data['ELITE_SIZE']
+MUTATION_RATE = load_data['MUTATION_RATE']
+GENERATIONS = load_data['GENERATIONS']
