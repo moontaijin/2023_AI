@@ -11,6 +11,18 @@ def create_initial_population(cities: List[City], clusters: List[List[City]], po
         population.append(individual)
     return population
 
+def create_initial_cluster_population(cities: List[City], clusters: List[List[City]], pop_size: int) -> List[List[City]]:
+    population = []
+    for _ in range(pop_size):
+        cluster_indices = list(range(len(clusters)))
+        random.shuffle(cluster_indices)
+        individual = []
+        for cluster_index in cluster_indices:
+            cluster = clusters[cluster_index]
+            individual.append(cluster)
+        population.append(individual)
+    return population
+
 def compute_total_distance(cities: List[City]) -> float:
     total_distance = 0
     num_cities = len(cities)
@@ -73,6 +85,28 @@ def cycle_crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City
     
     return child
 
+def sub_crossover(parent1: List[int], parent2: List[int]) -> Tuple[List[int], List[int]]:
+    # Create child arrays filled with -1
+    child1 = [-1] * len(parent1)
+    child2 = [-1] * len(parent2)
+
+    # Choose random start and end indices for the crossover section
+    start_index, end_index = sorted(random.sample(range(len(parent1)), 2))
+    # Copy the crossover section from parent1 to child1 and from parent2 to child2
+    child1[start_index:end_index] = parent1[start_index:end_index]
+    child2[start_index:end_index] = parent2[start_index:end_index]
+
+    # Fill the remaining elements in the children by iterating through the parents' elements in a circular manner
+    for child, parent in [(child1, parent2), (child2, parent1)]:
+        index = end_index
+        for value in parent:
+            if value not in child:
+                while child[index % len(child)] != -1:
+                    index += 1
+                child[index % len(child)] = value
+
+    return child1, child2
+
 def mutate(individual: List[City], mutation_rate: float) -> List[City]:
     for i in range(len(individual)):
         if random.random() < mutation_rate:
@@ -83,13 +117,16 @@ def mutate(individual: List[City], mutation_rate: float) -> List[City]:
 def breed_population(mating_pool: List[List[City]], elite_individuals: List[List[City]], elite_size: int, mutation_rate: float) -> List[List[City]]:
     offspring = elite_individuals
     for i in range(elite_size, len(mating_pool)):
-        child1, child2 = crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
+        #child1, child2 = crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
+        child1, child2 = sub_crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
         #child = cycle_crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
         offspring.append(mutate(child2, mutation_rate))
     return offspring
 
 def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
-    population = create_initial_population(cities, clusters, pop_size)
+    #population = create_initial_population(cities, clusters, pop_size)
+    population = create_initial_cluster_population(cities, clusters, pop_size)
+    print(population)
     best_individual = None
     best_distance = float('inf')
 
