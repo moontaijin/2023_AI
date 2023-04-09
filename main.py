@@ -19,10 +19,18 @@ def main():
         #plt.text(city.x - 5, city.y - 5, f"{i}", fontsize=12)
         next_city = best_order[i + 1] if i + 1 < len(best_order) else best_order[0]
         plt.plot([city.x, next_city.x], [city.y, next_city.y],c='skyblue',alpha=0.5)
-
+    
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
     plt.show()
+    
+    # 결과 저장
+    with open('results/test.csv', 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['name', 'x', 'y'])
+        for city in best_order:
+            writer.writerow([city.x, city.y])
+
 if __name__ == '__main__':
     main()
