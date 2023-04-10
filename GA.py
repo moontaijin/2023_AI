@@ -124,15 +124,15 @@ def breed_population(mating_pool: List[List[City]], elite_individuals: List[List
 
 def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
     #population = create_initial_population(cities, clusters, pop_size)
-    #population = create_initial_cluster_population(cities, clusters, pop_size)
-    population = create_population(clusters, pop_size)
+    population = create_initial_cluster_population(cities, clusters, pop_size)
+    #population = create_population(clusters, pop_size)
     best_individual = None
     best_distance = float('inf')
 
     print("유전 알고리즘 시작")
     for i in tqdm(range(generations)):
-        #population_ranked = rank_individuals(cities, population)
-        population_ranked = rank_populations(cities, population)
+        population_ranked = rank_individuals(cities, population)
+        #population_ranked = rank_populations(cities, population)
 
         if i % 10 == 0:
             print(f"Generation {i + 1}")

@@ -6,8 +6,8 @@ def main():
     clusters = cluster_cities(CITY_LIST, NUM_CLUSTER)
 
     # 각 클러스터에 대해 최적해를 찾음 (트리 탐색 사용)
-    #subproblem_solutions = solve_subproblems(clusters)
-    subproblem_solutions = solve_approximate_problems(CITY_LIST)
+    subproblem_solutions = solve_subproblems(clusters)
+    #subproblem_solutions = solve_approximate_problems(CITY_LIST)
     best_distance, best_order = genetic_algorithm(CITY_LIST, subproblem_solutions, POP_SIZE, ELITE_SIZE, MUTATION_RATE, GENERATIONS)
     #print(f"Best distance: {best_distance}")
     #print(f"Best order: {best_order}")

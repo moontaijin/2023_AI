@@ -12,15 +12,16 @@ def heuristic(city1, city2):
     return city1.distance(city2)
 
 def greedy(cities, start_city):
-    visited_cities = [cities[start_city]]  # 시작 도시를 방문 목록에 추가하고 목록에서 제거
-    cities.remove(cities[start_city])
-    while cities:
-        # 현재 도시에서 가장 가까운 도시를 찾음
-        closest_city = min(cities, key=lambda city: visited_cities[-1].distance(city))
-        visited_cities.append(closest_city)  # 가장 가까운 도시를 방문 목록에 추가
-        cities.remove(closest_city)  # 가장 가까운 도시를 목록에서 제거
+    city_indices = list(range(len(cities)))
+    start_city_index = cities.index(start_city)
+    visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
+    while city_indices:
+        # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
+        closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
+        visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
+        city_indices.remove(closest_city_index)  # 가장 가까운 도시 인덱스를 목록에서 제거
 
-    return visited_cities
+    return visited
 
 def dfs(cities, current_city, visited, total_distance):
     if len(visited) == len(cities):
@@ -63,11 +64,13 @@ def solve_subproblems(clusters):
     print("클러스터 최적해 찾기")
     for cluster in tqdm(clusters):
         #distance, path = dfs(cluster, cluster[0], [0], 0)
-        distance, path = a_star(cluster,cluster[0])
+        #distance, path = a_star(cluster,cluster[0])
+        path = greedy(cluster,cluster[0])
+        print(path)
         solutions.append([cluster[i] for i in path])
     return solutions
 
 def solve_approximate_problems(cities):
     print("근사 해 찾기")
-    path = greedy(cities,0)
+    path = greedy(cities,cities[0])
     return path
