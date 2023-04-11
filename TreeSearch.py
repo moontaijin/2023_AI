@@ -66,11 +66,48 @@ def solve_subproblems(clusters):
         #distance, path = dfs(cluster, cluster[0], [0], 0)
         #distance, path = a_star(cluster,cluster[0])
         path = greedy(cluster,cluster[0])
-        print(path)
-        solutions.append([cluster[i] for i in path])
+        solutions.append(two_opt([cluster[i] for i in path]))
     return solutions
 
 def solve_approximate_problems(cities):
     print("근사 해 찾기")
     path = greedy(cities,cities[0])
     return path
+
+def two_opt(cities):
+    # 시작 경로 설정
+    current_path = [i for i in range(len(cities))]
+    best_path = deepcopy(current_path)
+    
+    # 경로 최적화
+    improve = 0
+    max_try = 10000
+    while improve < max_try:
+        for i in range(1, len(cities) - 1):
+            for j in range(i + 1, len(cities)):
+                # 경로 일부를 뒤집음
+                new_path = deepcopy(current_path)
+                new_path[i:j] = current_path[i:j][::-1]
+                
+                # 경로 길이 계산
+                current_distance = 0
+                new_distance = 0
+                for k in range(len(current_path)):
+                    current_distance += cities[current_path[k]].distance(cities[current_path[(k + 1) % len(current_path)]])
+                    new_distance += cities[new_path[k]].distance(cities[new_path[(k + 1) % len(new_path)]])
+
+                # 경로 업데이트
+                if new_distance < current_distance:
+                    improve = 0
+                    best_path = deepcopy(new_path)
+                    current_path = deepcopy(new_path)
+                else:
+                    improve += 1
+                if improve >= max_try:
+                    break
+            if improve >= max_try:
+                break
+    
+    # 최적 경로 반환
+    best_route = [cities[best_path[i]] for i in range(len(best_path))]
+    return best_route
