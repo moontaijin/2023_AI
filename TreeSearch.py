@@ -1,4 +1,5 @@
 from base import *
+from GA import *
 
 def cluster_cities(cities, num_clusters):
     city_coordinates = np.array([[city.x, city.y] for city in cities])
@@ -65,9 +66,15 @@ def solve_subproblems(clusters):
     for cluster in tqdm(clusters):
         #distance, path = dfs(cluster, cluster[0], [0], 0)
         #distance, path = a_star(cluster,cluster[0])
-        path = greedy(cluster,cluster[0])
+
+        #sub_clusters = cluster_cities(cluster, 100)
+
+        best_cluster_distance, best_path_cluster = genetic_algorithm_without_cluster(cluster, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 1000)
+
+        #path = greedy(cluster,cluster[0])
+        path = greedy(best_path_cluster, best_path_cluster[0])
         print(path)
-        solutions.append([cluster[i] for i in path])
+        solutions.append([best_path_cluster[i] for i in path])
     return solutions
 
 def solve_approximate_problems(cities):

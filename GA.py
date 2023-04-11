@@ -149,3 +149,35 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
             print(f"Generation {i + 1}: Best distance: {best_distance}")
 
     return best_distance, extend_individual(best_individual)
+
+def genetic_algorithm_without_cluster(cities: List[City], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
+    #population = create_initial_population(cities, clusters, pop_size)
+    temp_cluster = []
+    temp_cluster.append(cities)
+    #population = create_initial_population(cities, temp_cluster, pop_size)
+    population = create_population(cities, pop_size)
+    best_individual = None
+    best_distance = float('inf')
+
+    print("유전 알고리즘 시작")
+    for i in tqdm(range(generations)):
+        #population_ranked = rank_individuals(cities, population)
+        population_ranked = rank_populations(cities, population)
+
+        if i % 10 == 0:
+            print(f"Generation {i + 1}")
+            print("Best: ", population_ranked[0][0])
+            print("Worst: ", population_ranked[-1][0])
+        elite_individuals = selection(population_ranked, ELITE_SIZE)
+        offspring = breed_population(population, elite_individuals, elite_size, mutation_rate)
+        population = offspring
+        current_best_distance, current_best_individual = population_ranked[0]
+        print(f"Generation {i + 1} Best distance: {current_best_distance}")
+        if current_best_distance < best_distance:
+            best_distance = current_best_distance
+            best_individual = current_best_individual
+            print(f"Generation {i + 1}: Best distance: {best_distance}")
+
+    temp = []
+    temp.append(best_individual)
+    return best_distance, extend_individual(temp)
