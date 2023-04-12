@@ -12,16 +12,38 @@ def heuristic(city1, city2):
     return city1.distance(city2)
 
 def greedy(cities, start_city):
-    city_indices = list(range(len(cities)))
-    start_city_index = cities.index(start_city)
-    visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
-    while city_indices:
-        # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
-        closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
-        visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
-        city_indices.remove(closest_city_index)  # 가장 가까운 도시 인덱스를 목록에서 제거
+    # city_indices = list(range(len(cities)))
+    # start_city_index = cities.index(start_city)
+    # visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
+    # while city_indices:
+    #     # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
+    #     closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
+    #     visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
+    #     city_indices.remove(closest_city_index)  # 가장 가까운 도시 인덱스를 목록에서 제거
 
-    return visited
+    # return visited
+
+    if len(cities) == 1:
+        return [0]
+    else:
+        center = City(50, 50)
+        city_indices = list(range(len(cities)))
+        first = min(city_indices, key=lambda index: cities[index].distance(center))
+        visited = [first] 
+        city_indices.remove(first)
+
+        second = min(city_indices, key=lambda index: cities[index].distance(center))
+        city_indices.remove(second)
+
+        while city_indices:
+            # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
+            closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
+            visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
+            city_indices.remove(closest_city_index)  # 가장 가까운 도시 인덱스를 목록에서 제거
+        
+        visited.append(second)
+        print(visited)
+        return visited
 
 def dfs(cities, current_city, visited, total_distance):
     if len(visited) == len(cities):
