@@ -67,14 +67,19 @@ def solve_subproblems(clusters):
         #distance, path = dfs(cluster, cluster[0], [0], 0)
         #distance, path = a_star(cluster,cluster[0])
 
-        #sub_clusters = cluster_cities(cluster, 100)
+        #sub_clusters = cluster_cities(cluster, 5)
+        path = greedy(cluster, cluster[0])
+        print(path)
 
-        best_cluster_distance, best_path_cluster = genetic_algorithm_without_cluster(cluster, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 1000)
+        #best_cluster_distance, best_path_cluster = genetic_algorithm_without_cluster(cluster, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 500)
+        #best_cluster_distance, best_path_cluster = genetic_algorithm(cluster, sub_clusters, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 1000)
 
         #path = greedy(cluster,cluster[0])
-        path = greedy(best_path_cluster, best_path_cluster[0])
-        print(path)
-        solutions.append([best_path_cluster[i] for i in path])
+        #path = greedy(best_path_cluster, best_path_cluster[0])
+        #print(path)
+        # 
+        #path = greedy(best_path_cluster, best_path_cluster[0])
+        solutions.append([cluster[i] for i in path])
     return solutions
 
 def solve_approximate_problems(cities):
