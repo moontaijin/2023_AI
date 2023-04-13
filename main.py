@@ -2,6 +2,8 @@ from TreeSearch import *
 from GA import *
 
 def main():
+    if not os.path.exists(f"./results/{EXP_NAME}"):
+        os.mkdir(f"./results/{EXP_NAME}")
     # K-means 클러스터링으로 도시들을 클러스터로 분할
     clusters = cluster_cities(CITY_LIST, NUM_CLUSTER)
 
@@ -31,11 +33,10 @@ def main():
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
-    plt.show()
-    #plt.savefig(f'results/test_CL{NUM_CLUSTER}_POP{POP_SIZE}_GEN{GENERATIONS}.png')
+    plt.savefig(f'results/{EXP_NAME}Best.png')
 
     # 결과 저장
-    with open(f'results/test_CL{NUM_CLUSTER}_POP{POP_SIZE}_GEN{GENERATIONS}.csv', 'w', newline='') as csvfile:
+    with open(f'results/{EXP_NAME}Best.csv', 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         for city in best_order:
             writer.writerow([city.x, city.y])

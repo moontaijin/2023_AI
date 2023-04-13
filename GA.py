@@ -132,6 +132,24 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
 
     print("유전 알고리즘 시작")
     for i in tqdm(range(generations)):
+        if i >0 and i%100 == 0:
+            best_order = extend_individual(best_individual)
+            os.mkdir(f"results/{EXP_NAME}/GEN{i}")
+            plt.figure(figsize=(12, 8))
+            for j, city in enumerate(best_order):
+                plt.scatter(city.x, city.y, c='blue', edgecolors='k', s=2)
+                next_city = best_order[j + 1] if j + 1 < len(best_order) else best_order[0]
+                plt.plot([city.x, next_city.x], [city.y, next_city.y],c='skyblue',alpha=0.5)
+            
+            plt.xlabel("X")
+            plt.ylabel("Y")
+            plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
+            plt.savefig(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.png')
+
+            with open(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.csv', 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                for city in best_order:
+                    writer.writerow([city.x, city.y])
         population_ranked = rank_individuals(cities, population)
         #population_ranked = rank_populations(cities, population)
 
@@ -162,6 +180,25 @@ def genetic_algorithm_without_cluster(cities: List[City], pop_size: int, elite_s
 
     print("유전 알고리즘 시작")
     for i in tqdm(range(generations)):
+        if i >0 and i%100 == 0:
+            best_order = extend_individual(best_individual)
+            os.mkdir(f"results/{EXP_NAME}/GEN{i}")
+            plt.figure(figsize=(12, 8))
+            for i, city in enumerate(best_order):
+                plt.scatter(city.x, city.y, c='blue', edgecolors='k', s=2)
+                next_city = best_order[i + 1] if i + 1 < len(best_order) else best_order[0]
+                plt.plot([city.x, next_city.x], [city.y, next_city.y],c='skyblue',alpha=0.5)
+            
+            plt.xlabel("X")
+            plt.ylabel("Y")
+            plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
+            plt.savefig(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.png')
+
+            with open(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.csv', 'w', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                for city in best_order:
+                    writer.writerow([city.x, city.y])
+            
         #population_ranked = rank_individuals(cities, population)
         population_ranked = rank_populations(cities, population)
 

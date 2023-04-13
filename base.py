@@ -5,6 +5,7 @@ import heapq
 import json
 import csv
 import networkx as nx
+import os
 
 from scipy.spatial.distance import pdist, squareform
 from typing import List, Tuple
@@ -45,3 +46,4 @@ POP_SIZE = load_data['POP_SIZE']
 ELITE_SIZE = load_data['ELITE_SIZE']
 MUTATION_RATE = load_data['MUTATION_RATE']
 GENERATIONS = load_data['GENERATIONS']
+EXP_NAME = load_data['EXP_NAME']
