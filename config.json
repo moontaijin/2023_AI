@@ -1,9 +1,9 @@
 {
     "CITY_SIZE": 1000,
     "CITY_LIST_PATH": "./resource/2023_AI_TSP.csv",
-    "NUM_CLUSTER": 3,
+    "NUM_CLUSTER": 20,
     "POP_SIZE": 400,
     "ELITE_SIZE": 100,
     "MUTATION_RATE": 0.05,
-    "GENERATIONS": 100
+    "GENERATIONS": 1000
 }
