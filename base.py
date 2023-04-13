@@ -4,12 +4,15 @@ import pandas as pd
 import heapq
 import json
 import csv
+import networkx as nx
 
+from scipy.spatial.distance import pdist, squareform
 from typing import List, Tuple
 from math import sqrt
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
+from copy import deepcopy
 
 class City:
     def __init__(self, x, y):
