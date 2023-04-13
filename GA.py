@@ -39,7 +39,6 @@ def compute_total_distance(cities: List[City]) -> float:
 
     return total_distance
 
-
 def extend_individual(individual: List[List[City]]) -> List[City]:
     extended_individual = []
     for cluster in individual:
@@ -89,7 +88,6 @@ def crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], Lis
 def cycle_crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], List[City]]:
     # Choose a random starting point
     index = random.randint(0,len(parent1)-1)
-
     parents = [parent1,parent2]
     parnet_index = -1
     child = [-1] * len(parent1)
@@ -107,11 +105,12 @@ def cycle_crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City
     
     return child
 
-def mutate(individual: List[City], mutation_rate: float) -> List[City]:
+def mutate(individual: List[List[City]], mutation_rate: float) -> List[List[City]]:
     for i in range(len(individual)):
         if random.random() < mutation_rate:
             swap_with = random.randint(0, len(individual) - 1)
             individual[i], individual[swap_with] = individual[swap_with], individual[i]
+    
     return individual
 
 def breed_population(mating_pool: List[List[City]], elite_individuals: List[List[City]], elite_size: int, mutation_rate: float) -> List[List[City]]:
@@ -142,10 +141,10 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
         offspring = breed_population(population, elite_individuals, elite_size, mutation_rate)
         population = offspring
         current_best_distance, current_best_individual = population_ranked[0]
-        #print(f"Generation {i + 1} Best distance: {current_best_distance}")
+
         if current_best_distance < best_distance:
             best_distance = current_best_distance
             best_individual = current_best_individual
-            print(f"Generation {i + 1}: Best distance: {best_distance}")
+            #print(f"Generation {i + 1}: Best distance: {best_distance}")
 
     return best_distance, extend_individual(best_individual)
