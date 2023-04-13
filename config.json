@@ -1,7 +1,7 @@
 {
     "CITY_SIZE": 1000,
-    "CITY_LIST_PATH": "C:/Users/moontaijin/Desktop/대학/인공지능/23Project#1/2023_AI_TSP.csv",
-    "NUM_CLUSTER": 20,
+    "CITY_LIST_PATH": "./resource/2023_AI_TSP.csv",
+    "NUM_CLUSTER": 5,
     "POP_SIZE": 400,
     "ELITE_SIZE": 100,
     "MUTATION_RATE": 0.05,

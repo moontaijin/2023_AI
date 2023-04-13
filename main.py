@@ -6,7 +6,15 @@ def main():
     clusters = cluster_cities(CITY_LIST, NUM_CLUSTER)
 
     # 각 클러스터에 대해 최적해를 찾음 (트리 탐색 사용)
-    subproblem_solutions = solve_subproblems(clusters)
+    #subproblem_solutions = solve_subproblems(clusters)
+    subproblem_solutions = []
+    #best_distance = 0
+    for cluster in clusters:
+        subproblem_solutions += [christofides_algorithm(cluster)]
+        #best_distance += compute_total_distance(subproblem_solutions[-1])
+
+    #best_order = extend_individual(subproblem_solutions) 
+    
     #subproblem_solutions = solve_approximate_problems(CITY_LIST)
     best_distance, best_order = genetic_algorithm(CITY_LIST, subproblem_solutions, POP_SIZE, ELITE_SIZE, MUTATION_RATE, GENERATIONS)
     #print(f"Best distance: {best_distance}")
@@ -23,7 +31,8 @@ def main():
     plt.xlabel("X")
     plt.ylabel("Y")
     plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
-    plt.savefig(f'results/test_CL{NUM_CLUSTER}_POP{POP_SIZE}_GEN{GENERATIONS}.png')
+    plt.show()
+    #plt.savefig(f'results/test_CL{NUM_CLUSTER}_POP{POP_SIZE}_GEN{GENERATIONS}.png')
 
     # 결과 저장
     with open(f'results/test_CL{NUM_CLUSTER}_POP{POP_SIZE}_GEN{GENERATIONS}.csv', 'w', newline='') as csvfile:
