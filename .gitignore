@@ -192,4 +192,6 @@ pyrightconfig.json
 .history
 .ionide
 
+# Results 폴더 내용 제거
+results/*
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python
