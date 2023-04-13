@@ -12,6 +12,7 @@ from math import sqrt
 from tqdm import tqdm
 from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
+from copy import deepcopy
 
 class City:
     def __init__(self, x, y):
