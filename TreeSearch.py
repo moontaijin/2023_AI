@@ -86,7 +86,7 @@ def greedy_a_star(cities, start_city):
     city_indices = list(range(len(cities)))
     start_city_index = cities.index(start_city)
     visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
-    while len(city_indices) >= 10:
+    while len(city_indices) >= 12:
         # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
         closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
         visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
