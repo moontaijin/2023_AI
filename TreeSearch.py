@@ -193,10 +193,7 @@ def two_opt(cities):
     
     # 경로 최적화
     improve = True
-    max_try = 0
     while improve:
-        print(max_try)
-        max_try = max_try + 1
         improve = False
         for i in range(1, len(cities) - 1):
             for j in range(i + 1, len(cities)):
@@ -216,12 +213,6 @@ def two_opt(cities):
                     improve = True
                     best_path = deepcopy(new_path)
                     current_path = deepcopy(new_path)
-            #     else:
-            #         improve += 1
-            #     if improve >= max_try:
-            #         break
-            # if improve >= max_try:
-            #     break
     
     # 최적 경로 반환
     best_route = [cities[best_path[i]] for i in range(len(best_path))]
