@@ -25,7 +25,7 @@ def greedy(cities, start_city):
     city_indices = list(range(len(cities)))
     # 시작 도시의 인덱스 찾음
     start_city_index = cities.index(start_city)
-    visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
+    visited = [city_indices.pop(start_city_index)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
     while city_indices:
         # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
         closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
@@ -180,11 +180,6 @@ def solve_subproblems(clusters):
 
     # 모든 클러스터에 대해 최적해를 담은 리스트를 반환
     return solutions
-
-def solve_approximate_problems(cities):
-    print("근사 해 찾기")
-    path = greedy(cities,cities[0])
-    return path
 
 def two_opt(cities):
     # 시작 경로 설정

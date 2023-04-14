@@ -1,7 +1,7 @@
 from base import *
 
 # 유전자가 클러스터 단위인 individual들을 가진 초기 population 생성 함수
-def create_initial_cluster_population(cities: List[City], clusters: List[List[City]], pop_size: int) -> List[List[List[City]]]:
+def create_initial_cluster_population(clusters: List[List[City]], pop_size: int) -> List[List[List[City]]]:
     population = []
     # pop_size 만큼의 individual을 가진 population 생성
     for _ in range(pop_size):
@@ -15,14 +15,6 @@ def create_initial_cluster_population(cities: List[City], clusters: List[List[Ci
             cluster = clusters[cluster_index]
             individual.append(cluster)
         population.append(individual)
-    return population
-
-# 유전자가 City 단위인 individual들을 가진 초기 population 생성 함수
-def create_population(cities: List[City], pop_size: int) -> List[List[City]]:
-    population = []
-    # pop_size 만큼의 individual을 가진 population 생성
-    for _ in range(pop_size):
-        population.append(cities)
     return population
 
 # City 리스트의 total distance 계산 함수
@@ -47,7 +39,7 @@ def extend_individual(individual: List[List[City]]) -> List[City]:
     return extended_individual
 
 # 각 individual의 total_distance를 산출해 내림차순으로 정렬하는 함수
-def rank_individuals(cities: List[City], population: List[List[City]]) -> List[Tuple[float, List[City]]]:
+def rank_individuals(population: List[List[City]]) -> List[Tuple[float, List[City]]]:
     fitness_results = []
     # 각각 individual들의 total_distance를 계산
     for individual in population:
@@ -55,15 +47,6 @@ def rank_individuals(cities: List[City], population: List[List[City]]) -> List[T
         extended_individual = extend_individual(individual)
         # total_distance 계산
         fitness_results.append((compute_total_distance(extended_individual), individual))
-    # 내림차순으로 정렬
-    return sorted(fitness_results, key=lambda x: x[0])
-
-# 각 individual의 total_distance를 산출해 내림차순으로 정렬하는 함수
-def rank_populations(cities: List[City], population: List[List[City]]) -> List[Tuple[float, List[City]]]:
-    fitness_results = []
-    # 각각 individual들의 total_distance를 계산
-    for individual in population:
-        fitness_results.append((compute_total_distance(individual), individual))
     # 내림차순으로 정렬
     return sorted(fitness_results, key=lambda x: x[0])
 
@@ -79,8 +62,9 @@ def crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], Lis
     child1 = [-1] * len(parent1)
     child2 = [-1] * len(parent2)
 
-    # 랜덤 시작, 끝 인덱스 생성
+    # 랜덤으로 시작, 끝 인덱스 결정
     start_index, end_index = sorted(random.sample(range(len(parent1)), 2))
+
     # parent1에서 child1로, parent2에서 child2로 복사
     child1[start_index:end_index] = parent1[start_index:end_index]
     child2[start_index:end_index] = parent2[start_index:end_index]
@@ -97,7 +81,7 @@ def crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], Lis
     return child1, child2
 
 # 두 개의 City 리스트를 cycle_crossover하는 함수
-def cycle_crossover(parent1, parent2):
+def cycle_crossover(parent1: List[City], parent2: List[City]) -> List[City]:
     # 랜덤하게 시작 인덱스 선택
     start_index = random.randint(0, len(parent1) - 1)
     child = [-1] * len(parent1)
@@ -136,18 +120,15 @@ def breed_population(mating_pool: List[List[City]], elite_individuals: List[List
     for i in range(elite_size, len(mating_pool)):
         # pop_size에서 elite_size를 제외한 나머지 individual들을 양 끝에서부터 순서대로 매칭시켜 교배
         child1, child2 = crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
-        #child = cycle_crossover(mating_pool[i], mating_pool[len(mating_pool) - i - 1])
 
         # 돌연변이 적용
-        #offspring.append(mutate(child, mutation_rate))
         offspring.append(mutate(child2, mutation_rate))
     return offspring
 
 # 유전 알고리즘 실행 함수
-def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
+def genetic_algorithm(clusters: List[List[City]], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
     # 초기 population 생성
-    population = create_initial_cluster_population(cities, clusters, pop_size)
-    #population = create_population(clusters, pop_size)
+    population = create_initial_cluster_population(clusters, pop_size)
 
     # 초기 최고해, 최단 거리 설정
     best_individual = None
@@ -176,8 +157,7 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
                     writer.writerow([city.x, city.y])
 
         # population을 각 individual의 total distance로 정렬
-        population_ranked = rank_individuals(cities, population)
-        #population_ranked = rank_populations(cities, population)
+        population_ranked = rank_individuals(population)
 
         if i % 10 == 0:
             print(f"Generation {i + 1}")
@@ -201,64 +181,3 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
             print(f"Generation {i + 1}: Best distance: {best_distance}")
 
     return best_distance, extend_individual(best_individual)
-
-def genetic_algorithm_without_cluster(cities: List[City], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
-    # 초기 population 생성
-    temp_cluster = []
-    temp_cluster.append(cities)
-    population = create_population(cities, pop_size)
-
-    # 초기 최고해, 최단 거리 설정
-    best_individual = None
-    best_distance = float('inf')
-
-    print("유전 알고리즘 시작")
-    for i in tqdm(range(generations)):
-        # 100세대마다 결과 저장
-        if i >0 and i%100 == 0:
-            best_order = extend_individual(best_individual)
-            os.mkdir(f"results/{EXP_NAME}/GEN{i}")
-            plt.figure(figsize=(12, 8))
-            for i, city in enumerate(best_order):
-                plt.scatter(city.x, city.y, c='blue', edgecolors='k', s=2)
-                next_city = best_order[i + 1] if i + 1 < len(best_order) else best_order[0]
-                plt.plot([city.x, next_city.x], [city.y, next_city.y],c='skyblue',alpha=0.5)
-            
-            plt.xlabel("X")
-            plt.ylabel("Y")
-            plt.title(f"Best TSP Route (Total Distance: {best_distance:.2f})")
-            plt.savefig(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.png')
-
-            with open(f'results/{EXP_NAME}/GEN{i}/test_CL{NUM_CLUSTER}_POP{POP_SIZE}.csv', 'w', newline='') as csvfile:
-                writer = csv.writer(csvfile)
-                for city in best_order:
-                    writer.writerow([city.x, city.y])
-            
-        #population_ranked = rank_individuals(cities, population)
-        population_ranked = rank_populations(cities, population)
-
-        if i % 10 == 0:
-            print(f"Generation {i + 1}")
-            print("Best: ", population_ranked[0][0])
-            print("Worst: ", population_ranked[-1][0])
-
-        # 가장 성능이 좋은 individual을 elite_size만큼 선택
-        elite_individuals = selection(population_ranked, ELITE_SIZE)
-        
-        # 교배를 통한 자식 세대 생성
-        offspring = breed_population(population, elite_individuals, elite_size, mutation_rate)
-        population = offspring
-        
-         # 이번 세대의 가장 성능이 좋은 individual
-        current_best_distance, current_best_individual = population_ranked[0]
-        print(f"Generation {i + 1} Best distance: {current_best_distance}")
-        
-        # 이번 세대가 전 세대들보다 성능이 개선되었을 경우 best_distance, best_individual 갱신
-        if current_best_distance < best_distance:
-            best_distance = current_best_distance
-            best_individual = current_best_individual
-            print(f"Generation {i + 1}: Best distance: {best_distance}")
-
-    temp = []
-    temp.append(best_individual)
-    return best_distance, extend_individual(temp)
