@@ -86,7 +86,7 @@ def greedy_a_star(cities, start_city):
     city_indices = list(range(len(cities)))
     start_city_index = cities.index(start_city)
     visited = [city_indices.pop(0)]  # 시작 도시 인덱스를 방문 목록에 추가하고 목록에서 제거
-    while len(city_indices) >= 12:
+    while len(city_indices) >= 10:
         # 현재 도시에서 가장 가까운 도시 인덱스를 찾음
         closest_city_index = min(city_indices, key=lambda index: cities[visited[-1]].distance(cities[index]))
         visited.append(closest_city_index)  # 가장 가까운 도시 인덱스를 방문 목록에 추가
@@ -149,7 +149,8 @@ def solve_subproblems(clusters):
         #distance, path = a_star(cluster,cluster[0])
 
         #sub_clusters = cluster_cities(cluster, 5)
-        path = greedy(cluster, cluster[0])
+        # path = greedy(cluster, cluster[0])
+        path = greedy_a_star(cluster, cluster[0])
 
         #best_cluster_distance, best_path_cluster = genetic_algorithm_without_cluster(cluster, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 500)
         #best_cluster_distance, best_path_cluster = genetic_algorithm(cluster, sub_clusters, POP_SIZE, ELITE_SIZE, MUTATION_RATE, 1000)

@@ -8,11 +8,11 @@ def main():
     clusters = cluster_cities(CITY_LIST, NUM_CLUSTER)
 
     # 각 클러스터에 대해 최적해를 찾음 (트리 탐색 사용)
-    #subproblem_solutions = solve_subproblems(clusters)
-    subproblem_solutions = []
+    subproblem_solutions = solve_subproblems(clusters)
+    # subproblem_solutions = []
     #best_distance = 0
-    for cluster in clusters:
-        subproblem_solutions += [christofides_algorithm(cluster)]
+    # for cluster in clusters:
+    #     subproblem_solutions += [christofides_algorithm(cluster)]
         #best_distance += compute_total_distance(subproblem_solutions[-1])
 
     #best_order = extend_individual(subproblem_solutions) 
