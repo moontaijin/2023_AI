@@ -35,7 +35,7 @@ def greedy(cities, start_city):
     # 모든 도시를 방분한 후, 방문한 도시 인덱스 목록을 반환
     return visited
 def dfs(cities, current_city, visited, total_distance):
-    # 모든 도시를 방분한 경우
+    # 모든 도시를 방문한 경우
     if len(visited) == len(cities):
         # 현재 도시에서 시작 도시로 돌아가는 거리와 빈 경로를 반환
         return total_distance + current_city.distance(cities[visited[0]]), []
