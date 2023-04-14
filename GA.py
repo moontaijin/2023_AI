@@ -1,20 +1,6 @@
 from base import *
-def create_initial_population(cities: List[City], clusters: List[List[City]], pop_size: int) -> List[List[City]]:
-    population = []
-    # pop_size 만큼의 individual을 가진 population 생성
-    for _ in range(pop_size):
-        # 인덱스 리스트 생성
-        cluster_indices = list(range(len(clusters)))
-        # 인덱스 리스트 랜덤 셔플
-        random.shuffle(cluster_indices)
-        individual = []
-        for cluster_index in cluster_indices:
-            # 랜덤 셔플된 인덱스 순서대로 클러스터 순서 변경
-            cluster = clusters[cluster_index]
-            individual.extend(cluster)
-        population.append(individual)
-    return population
 
+# 유전자가 클러스터 단위인 individual들을 가진 초기 population 생성 함수
 def create_initial_cluster_population(cities: List[City], clusters: List[List[City]], pop_size: int) -> List[List[List[City]]]:
     population = []
     # pop_size 만큼의 individual을 가진 population 생성
@@ -31,6 +17,7 @@ def create_initial_cluster_population(cities: List[City], clusters: List[List[Ci
         population.append(individual)
     return population
 
+# 유전자가 City 단위인 individual들을 가진 초기 population 생성 함수
 def create_population(cities: List[City], pop_size: int) -> List[List[City]]:
     population = []
     # pop_size 만큼의 individual을 가진 population 생성
@@ -38,9 +25,10 @@ def create_population(cities: List[City], pop_size: int) -> List[List[City]]:
         population.append(cities)
     return population
 
+# City 리스트의 total distance 계산 함수
 def compute_total_distance(cities: List[City]) -> float:
     total_distance = 0
-    # 노드의 개수 산출
+    # 노드의 개수
     num_cities = len(cities)
     for i in range(num_cities):
         # 노드와 다음 노드 사이의 유클리디안 거리를 산출해 total_distance에 반영
@@ -50,17 +38,18 @@ def compute_total_distance(cities: List[City]) -> float:
 
     return total_distance
 
+# 클러스터 단위로 묶여있는 City 리스트를 하나의 City 리스트로 연결하는 함수
 def extend_individual(individual: List[List[City]]) -> List[City]:
-    # 클러스터 단위로 묶여있는 City 리스트를 하나의 City 리스트로 연결
     extended_individual = []
     for cluster in individual:
         extended_individual.extend(cluster)
 
     return extended_individual
 
+# 각 individual의 total_distance를 산출해 내림차순으로 정렬하는 함수
 def rank_individuals(cities: List[City], population: List[List[City]]) -> List[Tuple[float, List[City]]]:
     fitness_results = []
-    # 각각 individual들의 Total Distance를 계산
+    # 각각 individual들의 total_distance를 계산
     for individual in population:
         # 클러스터 단위로 묶여있는 City 리스트를 하나로 이음
         extended_individual = extend_individual(individual)
@@ -69,19 +58,22 @@ def rank_individuals(cities: List[City], population: List[List[City]]) -> List[T
     # 내림차순으로 정렬
     return sorted(fitness_results, key=lambda x: x[0])
 
+# 각 individual의 total_distance를 산출해 내림차순으로 정렬하는 함수
 def rank_populations(cities: List[City], population: List[List[City]]) -> List[Tuple[float, List[City]]]:
     fitness_results = []
-    # 각각 individual들의 Total Distance를 계산
+    # 각각 individual들의 total_distance를 계산
     for individual in population:
         fitness_results.append((compute_total_distance(individual), individual))
     # 내림차순으로 정렬
     return sorted(fitness_results, key=lambda x: x[0])
 
+# 상위 individual들을 선택하는 함수
 def selection(population_ranked: List[Tuple[float, City]], elite_size: int) -> List[List[int]]:
     # population_ranked에서 상위 elite_size만큼을 선택
     selection_results = [ind[1] for ind in population_ranked[:elite_size]]
     return selection_results
 
+# 두 개의 City 리스트를 crossover하는 함수
 def crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], List[City]]:
     # -1로 채워진 자식 배열 생성
     child1 = [-1] * len(parent1)
@@ -104,6 +96,7 @@ def crossover(parent1: List[City], parent2: List[City]) -> Tuple[List[City], Lis
 
     return child1, child2
 
+# 두 개의 City 리스트를 cycle_crossover하는 함수
 def cycle_crossover(parent1, parent2):
     # 랜덤하게 시작 인덱스 선택
     start_index = random.randint(0, len(parent1) - 1)
@@ -124,6 +117,7 @@ def cycle_crossover(parent1, parent2):
             child[i] = parent2[i]
     return child
 
+# 일정 확률로 돌연변이를 일으키는 함수
 def mutate(individual: List[List[City]], mutation_rate: float) -> List[List[City]]:
     for i in range(len(individual)):
         # mutate_rate 보다 작은 값이 나오면 돌연변이 적용
@@ -134,6 +128,7 @@ def mutate(individual: List[List[City]], mutation_rate: float) -> List[List[City
     
     return individual
 
+# 자식 세대 생성 함수
 def breed_population(mating_pool: List[List[City]], elite_individuals: List[List[City]], elite_size: int, mutation_rate: float) -> List[List[City]]:
     # 상위 elite_size만큼의 individual들은 그대로 다음 세대로 전달
     offspring = elite_individuals
@@ -148,9 +143,9 @@ def breed_population(mating_pool: List[List[City]], elite_individuals: List[List
         offspring.append(mutate(child2, mutation_rate))
     return offspring
 
+# 유전 알고리즘 실행 함수
 def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
     # 초기 population 생성
-    #population = create_initial_population(cities, clusters, pop_size)
     population = create_initial_cluster_population(cities, clusters, pop_size)
     #population = create_population(clusters, pop_size)
 
@@ -209,10 +204,8 @@ def genetic_algorithm(cities: List[City], clusters: List[List[City]], pop_size: 
 
 def genetic_algorithm_without_cluster(cities: List[City], pop_size: int, elite_size: int, mutation_rate: float, generations: int) -> Tuple[float, List[City]]:
     # 초기 population 생성
-    #population = create_initial_population(cities, clusters, pop_size)
     temp_cluster = []
     temp_cluster.append(cities)
-    #population = create_initial_population(cities, temp_cluster, pop_size)
     population = create_population(cities, pop_size)
 
     # 초기 최고해, 최단 거리 설정
